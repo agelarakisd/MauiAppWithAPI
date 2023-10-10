@@ -18,56 +18,45 @@ namespace PassMaui.ViewModel
 
         private void LoadPasswords()
         {
-            var userId = Guid.NewGuid();
             Passwords = new List<PasswordInfo>()
             {
                 new PasswordInfo(
                     Site: "facebook",
                     Description: "my facebook password",
                     Username: "redrum",
-                    Password: "duskolo123",
-                    UserId: userId
-                ),                
+                    Password: "duskolo1",
+                    SiteId: Guid.NewGuid()
+                ),
                 new PasswordInfo(
                     Site: "instagram",
                     Description: "my instagram password",
                     Username: "redrum",
-                    Password: "duskolo123",
-                    UserId: userId
-                ),                
+                    Password: "duskolo2",
+                    SiteId: Guid.NewGuid()
+                ),
                 new PasswordInfo(
                     Site: "myspace",
                     Description: "my myspace password",
                     Username: "redrum",
-                    Password: "duskolo123",
-                    UserId: userId
-                ),                
+                    Password: "duskolo3",
+                    SiteId: Guid.NewGuid()
+                ),
                 new PasswordInfo(
                     Site: "twitter",
                     Description: "my twitter password",
                     Username: "redrum",
-                    Password: "duskolo123",
-                    UserId: userId
-                ),                
+                    Password: "duskolo4",
+                    SiteId: Guid.NewGuid()
+                ),
                 new PasswordInfo(
                     Site: "twitter",
                     Description: "my twitter password",
                     Username: "redrum",
-                    Password: "duskolo123",
-                    UserId: userId
+                    Password: "duskolo5",
+                    SiteId: Guid.NewGuid()
                 )
             };
         }
-
-        //private SecureString GetSecureString(string pwd)
-        //{
-        //    using var secureString = new SecureString();
-        //    foreach (char c in pwd)
-        //    {
-        //        secureString.AppendChar(c);
-        //    }
-        //    return secureString;
-        //}
     }
 
 }
