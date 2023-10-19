@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PassMaui.ViewModel"
+             xmlns:models="clr-namespace:PassMaui.Models"
+             x:Class="PassMaui.View.HomeView"
+             x:DataType="vm:HomeViewModel"
+             Title="HomeView"
+             x:Name="Home">
+
+    <StackLayout BackgroundColor="#dbdada">
+        <Button Text="Add Account" Command="{Binding Source={x:Reference Home}, Path=BindingContext.NavigateToAddAccountPage}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+        <CollectionView ItemsSource="{Binding Passwords}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="black">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout Orientation="Vertical" Span="3" />
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:PasswordInfo">
+                <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada">
+                    <StackLayout BackgroundColor="#dbdada">
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Site:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Site}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Description:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Description}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Username:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Username}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Password:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Password}" IsReadOnly="True" IsPassword="True" Placeholder="Password" WidthRequest="180" HorizontalTextAlignment="Start" FontSize="17" VerticalTextAlignment="Center"/>
+                        </StackLayout>
+
+                        <Grid>
+                            <Button Text="Copy" Command="{Binding Source={x:Reference Home}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding SiteId}"  HorizontalOptions="Start" BackgroundColor="black" Margin="0,5,0,0"/>
+                            <Button Text="Generate Password" Command="{Binding Source={x:Reference Home}, Path=BindingContext.GeneratePasswordCommand}" CommandParameter="{Binding SiteId}" HorizontalOptions="Center" BackgroundColor="black" Margin="0,5,0,0"/>
+                            <Button Text="Delete" Command="{Binding Source={x:Reference Home}, Path=BindingContext.DeletePasswordCommand}" CommandParameter="{Binding SiteId}" HorizontalOptions="End" BackgroundColor="#f54242" Margin="0,5,0,0"/>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+    </StackLayout>
+</ContentPage>
