@@ -6,6 +6,6 @@ namespace PassMaui.Models
         string Site,
         string Description,
         string Username,
-        string Password,
-        Guid SiteId);
+        Guid UserId,
+        string Password );
 }

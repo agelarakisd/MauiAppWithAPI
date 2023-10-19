@@ -11,13 +11,15 @@ namespace PassMaui
             InitializeComponent();
             BindingContext = new PasswordsViewModel();
 
+            //var peopleList = new List<PasswordInfo>();
+
+
             var rowsContainer = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
                 Spacing = 10
             };
             var context = BindingContext as PasswordsViewModel;
-
             for (int i = 0; i < context.Passwords.Count; i += 3)
             {
                 var rowStackLayout = new StackLayout
@@ -27,37 +29,31 @@ namespace PassMaui
 
                 for (int j = i; j < Math.Min(i + 3, context.Passwords.Count); j++)
                 {
-                    var contentBoxes = new ContentBoxesView();
+                    var fourTextBoxesView = new ContentBoxesView();
 
-                    contentBoxes.BindingContext = context.Passwords[j];
-
-                    contentBoxes.HorizontalOptions = LayoutOptions.FillAndExpand;
-
-                    var siteEntry = contentBoxes.FindByName<Entry>("SiteEntry") as Entry;
-                    if (siteEntry != null)
+                    if (fourTextBoxesView.FindByName<Entry>("SiteEntry") is Entry siteEntry)
                     {
                         siteEntry.Text = context.Passwords[j].Site;
                     }
 
-                    var descriptionEntry = contentBoxes.FindByName<Entry>("DescriptionEntry") as Entry;
-                    if (descriptionEntry != null)
+                    if (fourTextBoxesView.FindByName<Entry>("DescriptionEntry") is Entry descriptionEntry)
                     {
                         descriptionEntry.Text = context.Passwords[j].Description;
                     }
 
-                    var usernameEntry = contentBoxes.FindByName<Entry>("UsernameEntry") as Entry;
-                    if (usernameEntry != null)
+                    if (fourTextBoxesView.FindByName<Entry>("UsernameEntry") is Entry usernameEntry)
                     {
                         usernameEntry.Text = context.Passwords[j].Username;
                     }
 
-                    var passwordEntry = contentBoxes.FindByName<Entry>("PasswordEntry") as Entry;
-                    if (passwordEntry != null)
+                    if (fourTextBoxesView.FindByName<Entry>("PasswordEntry") is Entry passwordEntry)
                     {
                         passwordEntry.Text = context.Passwords[j].Password;
                     }
 
-                    rowStackLayout.Children.Add(contentBoxes);
+                    fourTextBoxesView.HorizontalOptions = LayoutOptions.FillAndExpand;
+
+                    rowStackLayout.Children.Add(fourTextBoxesView);
                 }
 
                 rowsContainer.Children.Add(rowStackLayout);
@@ -65,5 +61,8 @@ namespace PassMaui
 
             mainStackLayout.Children.Add(rowsContainer);
         }
+
+
+
     }
 }
