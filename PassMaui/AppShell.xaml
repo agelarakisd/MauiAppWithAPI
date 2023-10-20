@@ -10,5 +10,7 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:HomeView}"
         Route="View.HomeView" />
+    
+    
 
 </Shell>
