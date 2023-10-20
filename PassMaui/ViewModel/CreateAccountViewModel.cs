@@ -41,8 +41,8 @@ namespace PassMaui.ViewModel
             set => SetProperty(ref username, value);
         }
 
-        private int? passwordLength;
-        public int? PasswordLength
+        private string passwordLength;
+        public string PasswordLength
         {
             get => passwordLength;
             set => SetProperty(ref passwordLength, value);
@@ -64,7 +64,7 @@ namespace PassMaui.ViewModel
         [RelayCommand]
         public async Task CreateAccount()
         {
-            if (int.TryParse(PasswordLength.ToString(), out int passwordLength))
+            if (int.TryParse(PasswordLength, out int passwordLength))
             {
                 string password = GenerateRandomPassword(passwordLength);
 
@@ -81,7 +81,7 @@ namespace PassMaui.ViewModel
                 Site = string.Empty;
                 Description = string.Empty;
                 Username = string.Empty;
-                PasswordLength = 0;
+                PasswordLength = string.Empty;
             }
             else
             {
@@ -107,7 +107,7 @@ namespace PassMaui.ViewModel
             Site = string.Empty;
             Description = string.Empty;
             Username = string.Empty;
-            PasswordLength = null;
+            PasswordLength = string.Empty;
         }
     }
 }
