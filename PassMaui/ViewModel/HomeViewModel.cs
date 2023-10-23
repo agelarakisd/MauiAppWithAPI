@@ -11,9 +11,9 @@ namespace PassMaui.ViewModel
     {
         public ObservableCollection<PasswordInfo> Passwords { get; set; }
 
-        private SQLiteConnection database;
+        private readonly SQLiteConnection database;
 
-        public HomeViewModel()
+        public HomeViewModel() 
         {
             string dbPath = @"C:\sqlite\passmauidb.db";
             database = new SQLiteConnection(dbPath);
@@ -42,9 +42,20 @@ namespace PassMaui.ViewModel
             LoadPasswords();
         }
 
+
         public void OnAppearing()
         {
+            int previousEntryCount = Passwords.Count; 
+
             LoadPasswords();
+
+            int currentEntryCount = Passwords.Count; 
+
+            if (currentEntryCount > previousEntryCount)
+            {
+                LoadPasswords();
+                OnPropertyChanged(nameof(Passwords));
+            }
         }
 
         private void LoadPasswords()
@@ -62,6 +73,7 @@ namespace PassMaui.ViewModel
                 if (!string.IsNullOrEmpty(password))
                 {
                     await Clipboard.SetTextAsync(password);
+                    await Application.Current.MainPage.DisplayAlert("","Copied to clipboard","OK");
                 }
             }
         }

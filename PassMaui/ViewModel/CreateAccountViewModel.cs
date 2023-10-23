@@ -13,7 +13,7 @@ namespace PassMaui.ViewModel
 {
     public partial class CreateAccountViewModel : ObservableObject
     {
-        private SQLiteConnection database;
+        private readonly SQLiteConnection database;
 
         public CreateAccountViewModel(SQLiteConnection db)
         {
@@ -64,7 +64,7 @@ namespace PassMaui.ViewModel
         [RelayCommand]
         public async Task CreateAccount()
         {
-            if (int.TryParse(PasswordLength, out int passwordLength))
+            if (int.TryParse(PasswordLength, out int passwordLength) && passwordLength > 0)
             {
                 string password = GenerateRandomPassword(passwordLength);
 
@@ -85,9 +85,10 @@ namespace PassMaui.ViewModel
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Something went wrong.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", "Password length is not a valid number.", "OK");
             }
         }
+
 
 
         private static string GenerateRandomPassword(int length)
@@ -96,6 +97,9 @@ namespace PassMaui.ViewModel
             var random = new Random();
             var newPassword = new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            int randomIndex = random.Next(newPassword.Length);
+            newPassword = newPassword.Insert(randomIndex, "!");
 
             return newPassword;
         }
