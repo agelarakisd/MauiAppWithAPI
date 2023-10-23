@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PassMaui.ViewModel"
+             xmlns:models="clr-namespace:PassMaui.Models"
+             x:Class="PassMaui.View.HomeView"
+             x:DataType="vm:PasswordsViewModel"
+             Title="HomeView"
+             x:Name="Home">
+
+    <CollectionView ItemsSource="{Binding Passwords}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="black">
+        <CollectionView.ItemsLayout>
+            <GridItemsLayout Orientation="Vertical" Span="3" />
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:PasswordInfo">
+                <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada">
+                    <StackLayout BackgroundColor="#dbdada">
+                        
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Site:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Site}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Description:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Description}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Username:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Username}" VerticalOptions="CenterAndExpand" WidthRequest="180" IsReadOnly="True"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Password:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Password}" IsReadOnly="True" IsPassword="{Binding Source={x:Reference Home}, Path=BindingContext.IsPasswordHidden, Mode=TwoWay}" Placeholder="Password" WidthRequest="180" HorizontalTextAlignment="Start" FontSize="17" VerticalTextAlignment="Center"/>
+                        </StackLayout>
+                        
+                        <Grid>
+                            <Button Text="{Binding Source={x:Reference Home}, Path=BindingContext.ToggleButtonText}" Command="{Binding Source={x:Reference Home}, Path=BindingContext.TogglePasswordVisibilityCommand}" HorizontalOptions="Start" BackgroundColor="black" Margin="0,5,0,0"/>
+                            <Button Text="Generate Password" Command="{Binding Source={x:Reference Home}, Path=BindingContext.GeneratePasswordCommand}" HorizontalOptions="Center" BackgroundColor="black" Margin="0,5,0,0"/>
+                            <Button x:Name="DeleteButton" Text="Delete" HorizontalOptions="End" BackgroundColor="#f54242" Margin="0,5,0,0"/>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>
