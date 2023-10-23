@@ -4,9 +4,18 @@ namespace PassMaui.View;
 
 public partial class HomeView : ContentPage
 {
-	public HomeView(PasswordsViewModel model)
-	{
-		InitializeComponent();
-		BindingContext = model;
-	}
+    private HomeViewModel viewModel;
+    public HomeView()
+    {
+        InitializeComponent();
+        viewModel = new HomeViewModel();
+        BindingContext = viewModel;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        viewModel.OnAppearing();
+        
+    }
 }
