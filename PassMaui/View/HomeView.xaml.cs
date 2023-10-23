@@ -4,7 +4,7 @@ namespace PassMaui.View;
 
 public partial class HomeView : ContentPage
 {
-    private HomeViewModel viewModel;
+    private readonly HomeViewModel viewModel;
     public HomeView()
     {
         InitializeComponent();
