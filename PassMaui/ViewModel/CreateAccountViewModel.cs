@@ -13,39 +13,39 @@ namespace PassMaui.ViewModel
 {
     public partial class CreateAccountViewModel : ObservableObject
     {
-        private readonly SQLiteConnection database;
+        private readonly SQLiteConnection _database;
 
         public CreateAccountViewModel(SQLiteConnection db)
         {
-            database = db;
+            _database = db;
         }
 
-        private string site;
+        private string _site;
         public string Site
         {
-            get => site;
-            set => SetProperty(ref site, value);
+            get => _site;
+            set => SetProperty(ref _site, value);
         }
 
-        private string description;
+        private string _description;
         public string Description
         {
-            get => description;
-            set => SetProperty(ref description, value);
+            get => _description;
+            set => SetProperty(ref _description, value);
         }
 
-        private string username;
+        private string _username;
         public string Username
         {
-            get => username;
-            set => SetProperty(ref username, value);
+            get => _username;
+            set => SetProperty(ref _username, value);
         }
 
-        private string passwordLength;
+        private string _passwordLength;
         public string PasswordLength
         {
-            get => passwordLength;
-            set => SetProperty(ref passwordLength, value);
+            get => _passwordLength;
+            set => SetProperty(ref _passwordLength, value);
         }
 
         [RelayCommand]
@@ -57,12 +57,14 @@ namespace PassMaui.ViewModel
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Navigation Error", ex.Message, "OK");
+                if (Application.Current != null)
+                    if (Application.Current.MainPage != null)
+                        await Application.Current.MainPage.DisplayAlert("Navigation Error", ex.Message, "OK");
             }
         }
 
         [RelayCommand]
-        public async Task CreateAccount()
+        private async Task CreateAccount()
         {
             if (int.TryParse(PasswordLength, out int passwordLength) && passwordLength > 0)
             {
@@ -93,12 +95,12 @@ namespace PassMaui.ViewModel
 
         private static string GenerateRandomPassword(int length)
         {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
             var newPassword = new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
 
-            int randomIndex = random.Next(newPassword.Length);
+            var randomIndex = random.Next(newPassword.Length);
             newPassword = newPassword.Insert(randomIndex, "!");
 
             return newPassword;
@@ -106,7 +108,7 @@ namespace PassMaui.ViewModel
 
         private void SaveAccountToDatabase(PasswordInfo account)
         {
-            database.Insert(account);
+            _database.Insert(account);
 
             Site = string.Empty;
             Description = string.Empty;

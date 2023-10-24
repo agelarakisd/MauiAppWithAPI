@@ -7,7 +7,7 @@
              x:DataType="vm:HomeViewModel"
              Title="HomeView"
              x:Name="Home">
-
+<ScrollView>
     <StackLayout BackgroundColor="#dbdada">
         <Button Text="Add Account" Command="{Binding Source={x:Reference Home}, Path=BindingContext.NavigateToAddAccountPageCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
         <CollectionView ItemsSource="{Binding Passwords}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="black">
@@ -50,4 +50,5 @@
         </CollectionView.ItemTemplate>
     </CollectionView>
     </StackLayout>
+</ScrollView>
 </ContentPage>
