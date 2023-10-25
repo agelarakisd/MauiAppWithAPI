@@ -11,16 +11,16 @@ namespace PassMaui.ViewModel
     {
         public ObservableCollection<PasswordInfo> Passwords { get; set; }
 
-        private readonly SQLiteConnection database;
+        private readonly SQLiteConnection _database;
 
         public HomeViewModel() 
         {
-            string dbPath = @"C:\sqlite\passmauidb.db";
-            database = new SQLiteConnection(dbPath);
+            var dbPath = @"C:\sqlite\passmauidb.db";
+            _database = new SQLiteConnection(dbPath);
 
-            if (!database.TableMappings.Any(m => m.MappedType == typeof(PasswordInfo)))
+            if (!_database.TableMappings.Any(m => m.MappedType == typeof(PasswordInfo)))
             {
-                database.CreateTable<PasswordInfo>();
+                _database.CreateTable<PasswordInfo>();
             }
 
             LoadPasswords();
@@ -28,43 +28,43 @@ namespace PassMaui.ViewModel
 
         public void AddPassword(PasswordInfo password)
         {
-            database.Insert(password);
+            _database.Insert(password);
             LoadPasswords();
         }
-        public void UpdatePassword(PasswordInfo password)
+
+        private void UpdatePassword(PasswordInfo password)
         {
-            database.Update(password);
+            _database.Update(password);
             LoadPasswords(); 
         }
-        public void DeletePassword(PasswordInfo password)
+
+        private void DeletePassword(PasswordInfo password)
         {
-            database.Delete(password);
+            _database.Delete(password);
             LoadPasswords();
         }
 
 
         public void OnAppearing()
         {
-            int previousEntryCount = Passwords.Count; 
+            var previousEntryCount = Passwords.Count; 
 
             LoadPasswords();
 
-            int currentEntryCount = Passwords.Count; 
+            var currentEntryCount = Passwords.Count;
 
-            if (currentEntryCount > previousEntryCount)
-            {
-                LoadPasswords();
-                OnPropertyChanged(nameof(Passwords));
-            }
+            if (currentEntryCount <= previousEntryCount) return;
+            LoadPasswords();
+            OnPropertyChanged(nameof(Passwords));
         }
 
         private void LoadPasswords()
         {
-            Passwords = new ObservableCollection<PasswordInfo>(database.Table<PasswordInfo>());
+            Passwords = new ObservableCollection<PasswordInfo>(_database.Table<PasswordInfo>());
         }
 
         [RelayCommand]
-        public async Task CopyPassword(int siteId)
+        private async Task CopyPassword(int siteId)
         {
             var passwordInfo = Passwords.FirstOrDefault(item => item.SiteId == siteId);
             if (passwordInfo != null)
@@ -73,13 +73,15 @@ namespace PassMaui.ViewModel
                 if (!string.IsNullOrEmpty(password))
                 {
                     await Clipboard.SetTextAsync(password);
-                    await Application.Current.MainPage.DisplayAlert("","Copied to clipboard","OK");
+                    if (Application.Current != null)
+                        if (Application.Current.MainPage != null)
+                            await Application.Current.MainPage.DisplayAlert("", "Copied to clipboard", "OK");
                 }
             }
         }
 
         [RelayCommand]
-        public void DeleteAccount(int siteId)
+        private void DeleteAccount(int siteId)
         {
             var itemToDelete = Passwords.FirstOrDefault(item => item.SiteId == siteId);
 
@@ -96,7 +98,7 @@ namespace PassMaui.ViewModel
 
 
         [RelayCommand]
-        public async Task NavigateToAddAccountPage()
+        private async Task NavigateToAddAccountPage()
         {
             try
             {
@@ -104,39 +106,47 @@ namespace PassMaui.ViewModel
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                if (Application.Current != null)
+                    if (Application.Current.MainPage != null)
+                        await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
 
         [RelayCommand]
-        public async Task GeneratePassword(int siteId)
+        private async Task GeneratePassword(int siteId)
         {
             var itemToUpdate = Passwords.FirstOrDefault(item => item.SiteId == siteId);
 
             if (itemToUpdate != null)
             {
-                var result = await Application.Current.MainPage.DisplayPromptAsync("Question", "Give the length of the password");
-
-                if (!string.IsNullOrEmpty(result) && int.TryParse(result, out int passwordLength) && passwordLength > 0)
+                if (Application.Current != null)
                 {
-                    string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                    var random = new Random();
-                    var newPassword = new string(Enumerable.Repeat(chars, passwordLength)
-                        .Select(s => s[random.Next(s.Length)]).ToArray());
+                    if (Application.Current.MainPage != null)
+                    {
+                        var result = await Application.Current.MainPage.DisplayPromptAsync("Question", "Give the length of the password");
 
-                    int randomIndex = random.Next(newPassword.Length);
-                    newPassword = newPassword.Insert(randomIndex, "!");
+                        if (!string.IsNullOrEmpty(result) && int.TryParse(result, out int passwordLength) && passwordLength > 0)
+                        {
+                            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                            var random = new Random();
+                            var newPassword = new string(Enumerable.Repeat(chars, passwordLength)
+                                .Select(s => s[random.Next(s.Length)]).ToArray());
 
-                    itemToUpdate.Password = newPassword;
+                            var randomIndex = random.Next(newPassword.Length);
+                            newPassword = newPassword.Insert(randomIndex, "!");
 
-                    UpdatePassword(itemToUpdate);
+                            itemToUpdate.Password = newPassword;
 
-                    LoadPasswords();
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Warning", "Enter a valid number greater than 0", "OK");
+                            UpdatePassword(itemToUpdate);
+
+                            LoadPasswords();
+                        }
+                        else
+                        {
+                            await Application.Current.MainPage.DisplayAlert("Warning", "Enter a valid number greater than 0", "OK");
+                        }
+                    }
                 }
             }
         }
