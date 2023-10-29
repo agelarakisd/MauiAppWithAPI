@@ -12,8 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PassMaui.Application\PassMaui.Application.csproj" />
       <ProjectReference Include="..\PassMaui.Infrastructure\PassMaui.Infrastructure.csproj" />
-      <ProjectReference Include="..\PassMaui.Models\PassMaui.Models.csproj" />
+      <ProjectReference Include="..\PassMaui.Domain\PassMaui.Domain.csproj" />
     </ItemGroup>
 
 </Project>

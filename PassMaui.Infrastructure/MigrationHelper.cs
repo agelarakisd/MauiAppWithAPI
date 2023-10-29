@@ -3,7 +3,7 @@ using Migr8;
 
 namespace PassMaui.Infrastructure;
 
-public class MigrationHelper
+public abstract class MigrationHelper
 {
     public static void Migrate(Assembly migrationAssembly, string connectionString)
     {

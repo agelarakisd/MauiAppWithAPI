@@ -11,7 +11,7 @@ public class ApplicationContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(".\\SQLEXPRESS;Database=PassMaui;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=.;Database=PassMaui;Trusted_Connection=True;Encrypt=False;");
         }
     }
 }
