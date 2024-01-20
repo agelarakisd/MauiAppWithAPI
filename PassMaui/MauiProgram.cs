@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PassMaui.APIServices;
 using PassMaui.View;
 using PassMaui.ViewModel;
 
@@ -19,6 +20,7 @@ namespace PassMaui
             builder.Services.AddHttpClient();
             builder.Services.AddSingleton<HomeView>();
             builder.Services.AddSingleton<HomeViewModel>();
+            builder.Services.AddScoped<IAccountApiService, AccountApiService>();
 
 #if DEBUG
             builder.Logging.AddDebug();

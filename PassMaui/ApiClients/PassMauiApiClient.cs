@@ -1,5 +1,5 @@
 ﻿
-using System.Net.Http.Headers;
+using PassMaui.APIServices;
 using System.Text.Json;
 
 namespace PassMaui.ApiClients
@@ -15,17 +15,14 @@ namespace PassMaui.ApiClients
 
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
+        
+        public AccountApiService CreateApiService(int timeoutInSeconds = 5)
+        {
+            var httpClient = _httpClientFactory.CreateClient(nameof(PassMauiApiClient));
+            httpClient.BaseAddress = new Uri("https://localhost:7116/");
+            httpClient.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
 
-        //public async Task<IAtozApiClientV1> CreateClient(int timeoutInSeconds = 5)
-        //{
-        //    var httpClient = _clientFactory.CreateClient(nameof(IAtozApiClientV1));
-        //    httpClient.BaseAddress = new Uri(_settings.BaseUrl);
-        //    httpClient.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-        //    var accessToken = await _accessTokenProvider.GetAccessToken(_settings.Scopes);
-        //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        //    httpClient.DefaultRequestHeaders.Add("X-Correlation-Id", CorrelationScope.CurrentCorrelationIdOrNull);
-
-        //    return new AtozApiClientV1(httpClient);
-        //}
+            return new AccountApiService(httpClient);
+        }
     }
 }
