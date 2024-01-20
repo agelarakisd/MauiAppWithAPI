@@ -1,4 +1,4 @@
-﻿namespace PassMaui.Models;
+﻿namespace PassMaui.Domain;
 
 public class Account
 {

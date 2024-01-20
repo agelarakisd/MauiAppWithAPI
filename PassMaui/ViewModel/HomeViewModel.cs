@@ -15,7 +15,7 @@ namespace PassMaui.ViewModel
 
         public HomeViewModel() 
         {
-            var dbPath = @"C:\sqlite\passmauidb.db";
+            var dbPath = @"C:\SQL2022\passmauidb.db";
             _database = new SQLiteConnection(dbPath);
 
             if (!_database.TableMappings.Any(m => m.MappedType == typeof(PasswordInfo)))

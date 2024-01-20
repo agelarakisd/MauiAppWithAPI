@@ -9,7 +9,7 @@ public partial class CreateAccountView : ContentPage
     public CreateAccountView()
     {
         InitializeComponent();
-        var database = new SQLiteConnection(@"C:\sqlite\passmauidb.db");
+        var database = new SQLiteConnection(@"C:\SQL2022\passmauidb.db");
         BindingContext = new CreateAccountViewModel(database);
     }
 }

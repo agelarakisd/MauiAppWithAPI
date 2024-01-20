@@ -1,4 +1,4 @@
-﻿using PassMaui.Models;
+﻿using PassMaui.Domain;
 
 namespace PassMaui.API.Application;
 

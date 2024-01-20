@@ -2,6 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PassMaui.API.Configuration;
+using PassMaui.Application.Accounts.Commands;
+using MediatR;
+using PassMaui.Infrastructure.Accounts.Persistence;
+using PassMaui.Application.Common.Interfaces;
 
 namespace PassMaui.Infrastructure;
 
@@ -24,5 +28,8 @@ public class InfrastructureCollectionModule : IServiceCollectionModule
             var connectionString = configuration.GetConnectionString("PassMauiDb");
             options.UseSqlServer(connectionString);
         });
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateAccountCommand>());
+        services.AddScoped<IAccountRepository, AccountRepository>();
     }
 }

@@ -6,13 +6,12 @@ namespace PassMaui.Infrastructure.Migrations;
 public class Migration_0001_NewStart : ISqlMigration
 {
     public string Sql => $@"
-CREATE SCHEMA [MasterData]
-GO
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [MasterData].[Account](
+CREATE TABLE [MasterData].[Accounts](
     [Id] [int] IDENTITY(1,1) NOT NULL,
     [Site] [nvarchar](100) NOT NULL,
     [Description] [nvarchar](100) NOT NULL,

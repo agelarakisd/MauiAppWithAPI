@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Accounts\Queries\" />
+      <ProjectReference Include="..\PassMaui.Domain\PassMaui.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PassMaui.Domain\PassMaui.Domain.csproj" />
+      <PackageReference Include="Mediator.Net" Version="4.8.0" />
+      <PackageReference Include="MediatR" Version="12.2.0" />
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PassMaui.Domain;
+using PassMaui.Infrastructure.Accounts.EntityTypeConfiguration;
 
 namespace PassMaui.Infrastructure;
 
 public class ApplicationContext : DbContext
 {
+    public const string SCHEMA = "MasterData"; 
+
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     { }
 
@@ -13,5 +17,12 @@ public class ApplicationContext : DbContext
         {
             optionsBuilder.UseSqlServer("Server=.;Database=PassMaui;Trusted_Connection=True;Encrypt=False;");
         }
+    }
+
+    public DbSet<Account> Accounts { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new AccountEntityTypeConfiguration());
     }
 }
