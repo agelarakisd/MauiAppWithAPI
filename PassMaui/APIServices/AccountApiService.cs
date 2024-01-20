@@ -3,7 +3,7 @@ using PassMaui.Domain;
 
 namespace PassMaui.APIServices
 {
-    interface IAccountApiService
+    public interface IAccountApiService
     {
         Task<List<Account>> GetAllAccounts();
     }

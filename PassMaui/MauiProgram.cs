@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PassMaui.ApiClients;
 using PassMaui.APIServices;
 using PassMaui.View;
 using PassMaui.ViewModel;
@@ -18,9 +19,15 @@ namespace PassMaui
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.Services.AddHttpClient();
-            builder.Services.AddSingleton<HomeView>();
+            builder.Services.AddTransient<HomeView>();
             builder.Services.AddSingleton<HomeViewModel>();
-            builder.Services.AddScoped<IAccountApiService, AccountApiService>();
+            builder.Services.AddScoped<PassMauiApiClient>();
+            builder.Services.AddScoped<IAccountApiService>(sp =>
+            { 
+                var apiClient =  sp.GetService<PassMauiApiClient>(); 
+                return apiClient.CreateApiService();
+            });
+            
 
 #if DEBUG
             builder.Logging.AddDebug();

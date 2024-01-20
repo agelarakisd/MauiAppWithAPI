@@ -1,18 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PassMaui.Models;
+using PassMaui.APIServices;
+using PassMaui.Domain;
 using PassMaui.View;
-using SQLite;
 
 namespace PassMaui.ViewModel
 {
     public partial class CreateAccountViewModel : ObservableObject
     {
-        private readonly SQLiteConnection _database;
+        private readonly IAccountApiService _apiService;
 
-        public CreateAccountViewModel(SQLiteConnection db)
+        public CreateAccountViewModel(IAccountApiService apiService)
         {
-            _database = db;
+            _apiService = apiService;
         }
 
         private string _site;
@@ -37,6 +37,7 @@ namespace PassMaui.ViewModel
         }
 
         private string _passwordLength;
+
         public string PasswordLength
         {
             get => _passwordLength;
@@ -65,13 +66,7 @@ namespace PassMaui.ViewModel
             {
                 string password = GenerateRandomPassword(passwordLength);
 
-                var newAccount = new PasswordInfo
-                {
-                    Site = Site,
-                    Description = Description,
-                    Username = Username,
-                    Password = password
-                };
+                var newAccount = Account.Create(Site, Description, Username, password);
 
                 SaveAccountToDatabase(newAccount);
 
@@ -101,9 +96,9 @@ namespace PassMaui.ViewModel
             return newPassword;
         }
 
-        private void SaveAccountToDatabase(PasswordInfo account)
+        private void SaveAccountToDatabase(Account account)
         {
-            _database.Insert(account);
+            //_database.Insert(account);
 
             Site = string.Empty;
             Description = string.Empty;

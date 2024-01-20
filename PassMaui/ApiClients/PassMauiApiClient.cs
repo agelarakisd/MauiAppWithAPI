@@ -19,7 +19,7 @@ namespace PassMaui.ApiClients
         public AccountApiService CreateApiService(int timeoutInSeconds = 5)
         {
             var httpClient = _httpClientFactory.CreateClient(nameof(PassMauiApiClient));
-            httpClient.BaseAddress = new Uri("https://localhost:7116/");
+            httpClient.BaseAddress = new Uri("http://localhost:5119/");
             httpClient.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
 
             return new AccountApiService(httpClient);

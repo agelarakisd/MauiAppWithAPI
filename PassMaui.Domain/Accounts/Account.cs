@@ -1,7 +1,10 @@
-﻿namespace PassMaui.Domain;
+﻿using Newtonsoft.Json;
+
+namespace PassMaui.Domain;
 
 public class Account
 {
+    [JsonConstructor]
     private Account(string site, string description, string username, string password)
     {
         Site = site;
@@ -27,5 +30,10 @@ public class Account
         string password)
     {
         return new Account(site, description, username, password);
+    }
+
+    public void ChangePassword(string password)
+    {
+        Password = password;
     }
 }

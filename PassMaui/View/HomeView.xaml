@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:PassMaui.ViewModel"
-             xmlns:models1="clr-namespace:PassMaui.Models"
+             xmlns:domain="clr-namespace:PassMaui.Domain;assembly=PassMaui.Domain"
              x:Class="PassMaui.View.HomeView"
              x:DataType="vm:HomeViewModel"
              Title="HomeView"
@@ -15,7 +15,7 @@
             <GridItemsLayout Orientation="Vertical" Span="3" />
         </CollectionView.ItemsLayout>
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models1:PasswordInfo">
+            <DataTemplate x:DataType="domain:Account">
                 <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada">
                     <StackLayout BackgroundColor="#dbdada">
 
@@ -39,11 +39,7 @@
                             <Entry Text="{Binding Password}" IsReadOnly="True" IsPassword="True" Placeholder="Password" WidthRequest="180" HorizontalTextAlignment="Start" FontSize="17" VerticalTextAlignment="Center"/>
                         </StackLayout>
 
-                        <Grid>
-                            <Button Text="Copy" Command="{Binding Source={x:Reference Home}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding SiteId}"  HorizontalOptions="Start" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
-                            <Button Text="Generate Password" Command="{Binding Source={x:Reference Home}, Path=BindingContext.GeneratePasswordCommand}" CommandParameter="{Binding SiteId}" HorizontalOptions="Center" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
-                            <Button Text="Delete" Command="{Binding Source={x:Reference Home}, Path=BindingContext.DeleteAccountCommand}" CommandParameter="{Binding SiteId}" HorizontalOptions="End" BackgroundColor="#f54242" Margin="0,5,0,0"/>
-                        </Grid>
+                      
                     </StackLayout>
                 </Frame>
             </DataTemplate>

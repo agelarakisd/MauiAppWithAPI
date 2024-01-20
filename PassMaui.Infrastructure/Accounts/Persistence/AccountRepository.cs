@@ -37,7 +37,8 @@ public class AccountRepository : IAccountRepository
 
     public async Task<List<Account>> GetAllAccounts(CancellationToken cancellationToken = default)
     {
-        return await _context.Accounts.ToListAsync(cancellationToken);
+        var accounts = await _context.Accounts.ToListAsync(cancellationToken);
+        return accounts;
     }
 
 

@@ -1,72 +1,59 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PassMaui.Models;
 using PassMaui.View;
-using System.Collections.ObjectModel;
-using SQLite;
+using PassMaui.Domain;
+using PassMaui.APIServices;
 
 namespace PassMaui.ViewModel
 {
     public partial class HomeViewModel : ObservableObject
     {
-        public ObservableCollection<PasswordInfo> Passwords { get; set; }
+        private readonly IAccountApiService apiService;
 
-        private readonly SQLiteConnection _database;
+        [ObservableProperty]
+        List<Account> passwords;
 
-        public HomeViewModel() 
+        public HomeViewModel(IAccountApiService apiService) 
         {
-            var dbPath = @"C:\SQL2022\passmauidb.db";
-            _database = new SQLiteConnection(dbPath);
+            this.apiService = apiService;
+            LoadPasswordsAsync();
+        }
 
-            if (!_database.TableMappings.Any(m => m.MappedType == typeof(PasswordInfo)))
+        //public void AddPassword(PasswordInfo password)
+        //{
+        //    _database.Insert(password);
+        //    LoadPasswords();
+        //}
+
+        //private void UpdatePassword(PasswordInfo password)
+        //{
+        //    _database.Update(password);
+        //    LoadPasswords(); 
+        //}
+
+        //private void DeletePassword(PasswordInfo password)
+        //{
+        //    _database.Delete(password);
+        //    LoadPasswords();
+        //}
+
+        public async void LoadPasswordsAsync()
+        {
+            try
             {
-                _database.CreateTable<PasswordInfo>();
+                var passwords = await apiService.GetAllAccounts();
+                Passwords = passwords;
             }
-
-            LoadPasswords();
-        }
-
-        public void AddPassword(PasswordInfo password)
-        {
-            _database.Insert(password);
-            LoadPasswords();
-        }
-
-        private void UpdatePassword(PasswordInfo password)
-        {
-            _database.Update(password);
-            LoadPasswords(); 
-        }
-
-        private void DeletePassword(PasswordInfo password)
-        {
-            _database.Delete(password);
-            LoadPasswords();
-        }
-
-
-        public void OnAppearing()
-        {
-            var previousEntryCount = Passwords.Count; 
-
-            LoadPasswords();
-
-            var currentEntryCount = Passwords.Count;
-
-            if (currentEntryCount <= previousEntryCount) return;
-            LoadPasswords();
-            OnPropertyChanged(nameof(Passwords));
-        }
-
-        private void LoadPasswords()
-        {
-            Passwords = new ObservableCollection<PasswordInfo>(_database.Table<PasswordInfo>());
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [RelayCommand]
         private async Task CopyPassword(int siteId)
         {
-            var passwordInfo = Passwords.FirstOrDefault(item => item.SiteId == siteId);
+            var passwordInfo = Passwords.FirstOrDefault(item => item.Id == siteId);
             if (passwordInfo != null)
             {
                 string password = passwordInfo.Password;
@@ -83,11 +70,11 @@ namespace PassMaui.ViewModel
         [RelayCommand]
         private void DeleteAccount(int siteId)
         {
-            var itemToDelete = Passwords.FirstOrDefault(item => item.SiteId == siteId);
+            var itemToDelete = Passwords.FirstOrDefault(item => item.Id == siteId);
 
             if (itemToDelete != null)
             {
-                DeletePassword(itemToDelete);
+                //DeletePassword(itemToDelete);
 
                 Passwords.Remove(itemToDelete);
 
@@ -116,7 +103,7 @@ namespace PassMaui.ViewModel
         [RelayCommand]
         private async Task GeneratePassword(int siteId)
         {
-            var itemToUpdate = Passwords.FirstOrDefault(item => item.SiteId == siteId);
+            var itemToUpdate = Passwords.FirstOrDefault(item => item.Id == siteId);
 
             if (itemToUpdate != null)
             {
@@ -136,11 +123,11 @@ namespace PassMaui.ViewModel
                             var randomIndex = random.Next(newPassword.Length);
                             newPassword = newPassword.Insert(randomIndex, "!");
 
-                            itemToUpdate.Password = newPassword;
+                            itemToUpdate.ChangePassword(newPassword);
 
-                            UpdatePassword(itemToUpdate);
+                            //UpdatePassword(itemToUpdate);
 
-                            LoadPasswords();
+                            //LoadPasswords();
                         }
                         else
                         {
