@@ -7,6 +7,7 @@ public interface IAccountRepository
     Task<Account> Add(Account account, CancellationToken cancellationToken = default);
     Task<List<Account>> GetAllAccounts( CancellationToken cancellationToken = default);
     Task<Account> FindById(int id, CancellationToken cancellationToken = default);
+    Task Update(Account account, CancellationToken cancellationToken = default);
     void Delete(Account account);
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

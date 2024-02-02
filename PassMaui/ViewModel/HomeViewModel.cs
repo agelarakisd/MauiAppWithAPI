@@ -8,40 +8,36 @@ namespace PassMaui.ViewModel
 {
     public partial class HomeViewModel : ObservableObject
     {
-        private readonly IAccountApiService apiService;
+        private readonly IAccountApiService _apiService;
 
         [ObservableProperty]
         List<Account> passwords;
 
-        public HomeViewModel(IAccountApiService apiService) 
+        private int _hiddenId;
+        public int HiddenId
         {
-            this.apiService = apiService;
-            LoadPasswordsAsync();
+            get { return _hiddenId; }
+            set
+            {
+                if (_hiddenId != value)
+                {
+                    _hiddenId = value;
+                    OnPropertyChanged(nameof(HiddenId));
+                }
+            }
         }
 
-        //public void AddPassword(PasswordInfo password)
-        //{
-        //    _database.Insert(password);
-        //    LoadPasswords();
-        //}
-
-        //private void UpdatePassword(PasswordInfo password)
-        //{
-        //    _database.Update(password);
-        //    LoadPasswords(); 
-        //}
-
-        //private void DeletePassword(PasswordInfo password)
-        //{
-        //    _database.Delete(password);
-        //    LoadPasswords();
-        //}
+        public HomeViewModel(IAccountApiService apiService) 
+        {
+            _apiService = apiService;
+            LoadPasswordsAsync();
+        }
 
         public async void LoadPasswordsAsync()
         {
             try
             {
-                var passwords = await apiService.GetAllAccounts();
+                var passwords = await _apiService.GetAllAccounts();
                 Passwords = passwords;
             }
             catch (Exception)
@@ -51,34 +47,17 @@ namespace PassMaui.ViewModel
         }
 
         [RelayCommand]
-        private async Task CopyPassword(int siteId)
+        private async Task NavigateToEditAccount(int siteId)
         {
-            var passwordInfo = Passwords.FirstOrDefault(item => item.Id == siteId);
-            if (passwordInfo != null)
+            try 
             {
-                string password = passwordInfo.Password;
-                if (!string.IsNullOrEmpty(password))
-                {
-                    await Clipboard.SetTextAsync(password);
-                    if (Application.Current != null)
-                        if (Application.Current.MainPage != null)
-                            await Application.Current.MainPage.DisplayAlert("", "Copied to clipboard", "OK");
-                }
+                await Application.Current.MainPage.Navigation.PushAsync(new EditAccountView(_apiService,siteId));
             }
-        }
-
-        [RelayCommand]
-        private void DeleteAccount(int siteId)
-        {
-            var itemToDelete = Passwords.FirstOrDefault(item => item.Id == siteId);
-
-            if (itemToDelete != null)
+            catch (Exception ex) 
             {
-                //DeletePassword(itemToDelete);
-
-                Passwords.Remove(itemToDelete);
-
-                OnPropertyChanged(nameof(Passwords));
+                if (Application.Current != null)
+                    if (Application.Current.MainPage != null)
+                        await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
@@ -89,52 +68,13 @@ namespace PassMaui.ViewModel
         {
             try
             {
-                await Shell.Current.GoToAsync(nameof(CreateAccountView));
+                await Application.Current.MainPage.Navigation.PushAsync(new CreateAccountView(_apiService));
             }
             catch (Exception ex)
             {
                 if (Application.Current != null)
                     if (Application.Current.MainPage != null)
                         await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
-            }
-        }
-
-
-        [RelayCommand]
-        private async Task GeneratePassword(int siteId)
-        {
-            var itemToUpdate = Passwords.FirstOrDefault(item => item.Id == siteId);
-
-            if (itemToUpdate != null)
-            {
-                if (Application.Current != null)
-                {
-                    if (Application.Current.MainPage != null)
-                    {
-                        var result = await Application.Current.MainPage.DisplayPromptAsync("Question", "Give the length of the password");
-
-                        if (!string.IsNullOrEmpty(result) && int.TryParse(result, out int passwordLength) && passwordLength > 0)
-                        {
-                            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                            var random = new Random();
-                            var newPassword = new string(Enumerable.Repeat(chars, passwordLength)
-                                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-                            var randomIndex = random.Next(newPassword.Length);
-                            newPassword = newPassword.Insert(randomIndex, "!");
-
-                            itemToUpdate.ChangePassword(newPassword);
-
-                            //UpdatePassword(itemToUpdate);
-
-                            //LoadPasswords();
-                        }
-                        else
-                        {
-                            await Application.Current.MainPage.DisplayAlert("Warning", "Enter a valid number greater than 0", "OK");
-                        }
-                    }
-                }
             }
         }
 

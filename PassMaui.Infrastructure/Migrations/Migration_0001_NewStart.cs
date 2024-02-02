@@ -7,6 +7,8 @@ public class Migration_0001_NewStart : ISqlMigration
 {
     public string Sql => $@"
 
+CREATE SCHEMA [MasterData]
+GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

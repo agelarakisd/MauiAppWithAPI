@@ -87,7 +87,7 @@ namespace PassMaui.ViewModel
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
-            var newPassword = new string(Enumerable.Repeat(chars, length)
+            var newPassword = new string(Enumerable.Repeat(chars, length-1)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
 
             var randomIndex = random.Next(newPassword.Length);
@@ -96,9 +96,11 @@ namespace PassMaui.ViewModel
             return newPassword;
         }
 
-        private void SaveAccountToDatabase(Account account)
+        private async void SaveAccountToDatabase(Account account)
         {
-            //_database.Insert(account);
+            await _apiService.Create(account);
+            await Application.Current.MainPage.DisplayAlert("Success!", "Account Created.", "OK");
+            await Shell.Current.GoToAsync(nameof(HomeView));
 
             Site = string.Empty;
             Description = string.Empty;

@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.UseAllOfToExtendReferenceSchemas();
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pass Maui API", Version = "v1", Contact = new OpenApiContact { Email = "tonphres@gmail.com", Name = "SKASE" } });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pass Maui API", Version = "v1", Contact = new OpenApiContact { Email = "agelarakisd@icloud.com", Name = "Dimitris" } });
 });
 
 builder.Services.AddOpenApiDocument();

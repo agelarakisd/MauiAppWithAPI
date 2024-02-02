@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PassMaui.API.Configuration;
 using PassMaui.Application.Accounts.Commands;
-using MediatR;
 using PassMaui.Infrastructure.Accounts.Persistence;
 using PassMaui.Application.Common.Interfaces;
 

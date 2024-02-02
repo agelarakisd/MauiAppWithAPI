@@ -46,4 +46,11 @@ public class AccountRepository : IAccountRepository
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task Update(Account updatedAccount, CancellationToken cancellationToken = default)
+    {
+        _context.Accounts.Update(updatedAccount);
+        await SaveChangesAsync(cancellationToken);
+    }
+
 }

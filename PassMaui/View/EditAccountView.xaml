@@ -1,0 +1,56 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PassMaui.ViewModel"
+             xmlns:domain="clr-namespace:PassMaui.Domain;assembly=PassMaui.Domain"
+             x:Class="PassMaui.View.EditAccountView"
+             x:DataType="vm:EditAccountViewModel"
+             Title="EditAccountView"
+             x:Name="EditAccount">
+    <ScrollView>
+        <StackLayout BackgroundColor="#dbdada">
+            <Button Text="Back" Command="{Binding NavigateBackCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+            <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="black">
+                <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada" HorizontalOptions="FillAndExpand">
+                    <StackLayout BackgroundColor="#dbdada">
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Site:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Account.Site}" Placeholder="Site" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Description:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Account.Description}" Placeholder="Description" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Username:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Account.Username}" Placeholder="Username"  VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Label Text="Password:" VerticalOptions="Center" WidthRequest="90"/>
+                            <Entry Text="{Binding Account.Password}" Placeholder="Password" IsPassword="True" WidthRequest="180"/>
+                        </StackLayout>
+
+                        <Grid HorizontalOptions="CenterAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Text="Copy Password" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding Account.Id}"  Grid.Row="0" Grid.Column="0" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
+                            <Button Text="Generate Password" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.GeneratePasswordCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="0" Grid.Column="1" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
+                            <Button Text="Delete" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.DeleteAccountCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="0" Grid.Column="2" BackgroundColor="#f54242" Margin="0,5,0,0"/>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+
+
+</ContentPage>

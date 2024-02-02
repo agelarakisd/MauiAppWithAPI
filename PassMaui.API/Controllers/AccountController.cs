@@ -26,6 +26,9 @@ public class AccountController : ControllerBase
     [HttpGet("{id}", Name = "Get Account By Id")]
     public async Task<IActionResult> GetAccountByIdAsync([FromRoute] int id) => Ok(await _mediator.Send(new GetAccountByIdQuery(id)));
 
+    [HttpPut("", Name = "Update Account Info")]
+    public async Task<IActionResult> UpdateAccountAsync([FromBody] UpdateAccountCommand command) => Ok(await _mediator.Send(command));
+
     [HttpDelete("{id}", Name = "Delete Account")]
     public async Task<IActionResult> DeleteAccount([FromRoute] int id)
     {

@@ -4,9 +4,18 @@ namespace PassMaui.Domain;
 
 public class Account
 {
-    [JsonConstructor]
     private Account(string site, string description, string username, string password)
     {
+        Site = site;
+        Description = description;
+        Username = username;
+        Password = password;
+    }
+
+    [JsonConstructor]
+    private Account(int id, string site, string description, string username, string password)
+    {
+        Id = id;
         Site = site;
         Description = description;
         Username = username;
@@ -34,6 +43,14 @@ public class Account
 
     public void ChangePassword(string password)
     {
+        Password = password;
+    }
+
+    public void ChangeAccountDetails(string site, string description, string username, string password) 
+    {
+        Site = site;
+        Description = description;
+        Username = username;
         Password = password;
     }
 }
