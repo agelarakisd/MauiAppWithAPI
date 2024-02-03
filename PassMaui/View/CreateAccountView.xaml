@@ -1,0 +1,38 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PassMaui.ViewModel"
+             x:Class="PassMaui.View.CreateAccountView"
+             x:DataType="vm:CreateAccountViewModel"
+             Title="CreateAccountView"
+             x:Name="CreateAccount">
+
+    <StackLayout BackgroundColor="#dbdada">
+        <Button Text="Back" Command="{Binding NavigateBackAsyncCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+        <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada" HorizontalOptions="FillAndExpand">
+            <StackLayout BackgroundColor="#dbdada">
+                <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                    <Label Text="Site:" VerticalOptions="Center" WidthRequest="90"/>
+                    <Entry Text="{Binding Site}" Placeholder="Site" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                    <Label Text="Description:" VerticalOptions="Center" WidthRequest="90"/>
+                    <Entry Text="{Binding Description}" Placeholder="Description" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                    <Label Text="Username:" VerticalOptions="Center" WidthRequest="90"/>
+                    <Entry Text="{Binding Username}" Placeholder="Username"  VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                    <Label Text="Password Length:" VerticalOptions="Center" WidthRequest="90"/>
+                    <Entry Text="{Binding PasswordLength}" Placeholder="Password Length" WidthRequest="180"/>
+                </StackLayout>
+            </StackLayout>
+        </Frame>
+        <Button Text="Create" Command="{Binding CreateAccountAsyncCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+
+    </StackLayout>
+
+</ContentPage>
