@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PassMaui.APIServices;
 using PassMaui.Domain;
 using PassMaui.View;
+using System.Text;
 
 namespace PassMaui.ViewModel
 {
@@ -10,9 +11,12 @@ namespace PassMaui.ViewModel
     {
         private readonly IAccountApiService _apiService;
 
+        public IAsyncRelayCommand NavigateBackAsyncCommand => new AsyncRelayCommand(NavigateBackAsync);
+        public IAsyncRelayCommand CreateAccountAsyncCommand => new AsyncRelayCommand(CreateAccountAsync);
+
         public CreateAccountViewModel(IAccountApiService apiService)
         {
-            _apiService = apiService;
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
         }
 
         private string _site;
@@ -37,15 +41,13 @@ namespace PassMaui.ViewModel
         }
 
         private string _passwordLength;
-
         public string PasswordLength
         {
             get => _passwordLength;
             set => SetProperty(ref _passwordLength, value);
         }
 
-        [RelayCommand]
-        private static async Task NavigateBack()
+        private async Task NavigateBackAsync()
         {
             try
             {
@@ -53,59 +55,66 @@ namespace PassMaui.ViewModel
             }
             catch (Exception ex)
             {
-                if (Application.Current != null)
-                    if (Application.Current.MainPage != null)
-                        await Application.Current.MainPage.DisplayAlert("Navigation Error", ex.Message, "OK");
+                await HandleErrorAsync(ex);
             }
         }
 
-        [RelayCommand]
-        private async Task CreateAccount()
+        private async Task CreateAccountAsync()
         {
-            if (int.TryParse(PasswordLength, out int passwordLength) && passwordLength > 0)
+            try
             {
-                string password = GenerateRandomPassword(passwordLength);
-
-                var newAccount = Account.Create(Site, Description, Username, password);
-
-                SaveAccountToDatabase(newAccount);
-
-                Site = string.Empty;
-                Description = string.Empty;
-                Username = string.Empty;
-                PasswordLength = string.Empty;
+                if (int.TryParse(PasswordLength, out int passwordLength) && passwordLength > 0)
+                {
+                    string password = GenerateRandomPassword(passwordLength);
+                    var newAccount = Account.Create(Site, Description, Username, password);
+                    await SaveAccountToDatabaseAsync(newAccount);
+                    ClearFields();
+                    await DisplayAlert("Success!", "Account Created.");
+                    await Shell.Current.GoToAsync(nameof(HomeView));
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Password length is not a valid number.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Password length is not a valid number.", "OK");
+                await HandleErrorAsync(ex);
             }
         }
 
+        private async Task SaveAccountToDatabaseAsync(Account account)
+        {
+            await _apiService.Create(account).ConfigureAwait(false);
+        }
 
+        private static async Task DisplayAlert(string title, string message)
+        {
+            await Application.Current?.MainPage?.DisplayAlert(title, message, "OK");
+        }
+
+        private static async Task HandleErrorAsync(Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex}");
+
+            await DisplayAlert("Error", ex.Message);
+        }
+
+        private void ClearFields()
+        {
+            Site = Description = Username = PasswordLength = string.Empty;
+        }
 
         private static string GenerateRandomPassword(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
-            var newPassword = new string(Enumerable.Repeat(chars, length-1)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-            var randomIndex = random.Next(newPassword.Length);
-            newPassword = newPassword.Insert(randomIndex, "!");
-
-            return newPassword;
-        }
-
-        private async void SaveAccountToDatabase(Account account)
-        {
-            await _apiService.Create(account);
-            await Application.Current.MainPage.DisplayAlert("Success!", "Account Created.", "OK");
-            await Shell.Current.GoToAsync(nameof(HomeView));
-
-            Site = string.Empty;
-            Description = string.Empty;
-            Username = string.Empty;
-            PasswordLength = string.Empty;
+            var newPassword = new StringBuilder(length);
+            for (int i = 0; i < length; i++)
+            {
+                newPassword.Append(chars[random.Next(chars.Length)]);
+            }
+            return newPassword.ToString();
         }
     }
 }

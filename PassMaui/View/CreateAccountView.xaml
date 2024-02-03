@@ -7,7 +7,7 @@
              x:Name="CreateAccount">
 
     <StackLayout BackgroundColor="#dbdada">
-        <Button Text="Back" Command="{Binding NavigateBackCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+        <Button Text="Back" Command="{Binding NavigateBackAsyncCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
         <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#dbdada" HorizontalOptions="FillAndExpand">
             <StackLayout BackgroundColor="#dbdada">
                 <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
@@ -31,7 +31,7 @@
                 </StackLayout>
             </StackLayout>
         </Frame>
-        <Button Text="Create" Command="{Binding CreateAccountCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
+        <Button Text="Create" Command="{Binding CreateAccountAsyncCommand}" HorizontalOptions="FillAndExpand" BackgroundColor="black" />
 
     </StackLayout>
 

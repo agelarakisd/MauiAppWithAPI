@@ -16,26 +16,29 @@ namespace PassMaui.ViewModel
 
         public EditAccountViewModel(IAccountApiService apiService, int id)
         {
-            _apiService = apiService;
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
             _id = id;
-            LoadPasswordsAsync();
+            _ = LoadAccountAsync();
         }
 
-        public async void LoadPasswordsAsync()
+        public IAsyncRelayCommand CopyPasswordCommand => new AsyncRelayCommand<int>(CopyPassword);
+        public IAsyncRelayCommand DeleteAccountCommand => new AsyncRelayCommand(DeleteAccount);
+        public IAsyncRelayCommand GeneratePasswordCommand => new AsyncRelayCommand<int>(GeneratePassword);
+        public IAsyncRelayCommand NavigateBackCommand => new AsyncRelayCommand(NavigateBack);
+
+        public async Task LoadAccountAsync()
         {
             try
             {
-                var password = await _apiService.GetAccount(_id);
-                Account = password;
+                Account = await _apiService.GetAccount(_id);
                 OnPropertyChanged(nameof(Account));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                HandleException("An error occurred while loading account", ex);
             }
         }
 
-        [RelayCommand]
         private async Task CopyPassword(int siteId)
         {
             try 
@@ -44,77 +47,70 @@ namespace PassMaui.ViewModel
                 if (!string.IsNullOrEmpty(password))
                 {
                     await Clipboard.SetTextAsync(password);
-                    if (Application.Current != null)
-                        if (Application.Current.MainPage != null)
-                            await Application.Current.MainPage.DisplayAlert("", "Copied to clipboard", "OK");
+                    await Application.Current.MainPage?.DisplayAlert("", "Copied to clipboard", "OK");
                 }
             }
             catch (Exception ex)
             {
-                if (Application.Current != null)
-                    if (Application.Current.MainPage != null)
-                        await Application.Current.MainPage.DisplayAlert("An error occurred while copying password", ex.Message, "OK");
+                HandleException("An error occurred while copying password", ex);
             }
 
         }
 
-        [RelayCommand]
         private async Task DeleteAccount()
         {
-            try
+            if (await EditAccountViewModel.ConfirmAccountDeletion())
             {
-                await _apiService.Delete(_id);
-                await Shell.Current.GoToAsync(nameof(HomeView));
-            }
-            catch (Exception ex)
-            {
-                if (Application.Current != null && Application.Current.MainPage != null)
+                try
                 {
-                    await Application.Current.MainPage.DisplayAlert("An error occurred while deleting the account", ex.Message, "OK");
+                    await _apiService.Delete(_id);
+                    await Shell.Current.GoToAsync(nameof(HomeView));
+                }
+                catch (Exception ex)
+                {
+                    HandleException("An error occurred while deleting the account", ex);
                 }
             }
         }
 
-        [RelayCommand]
         private async Task GeneratePassword(int siteId)
         {
-            var itemToUpdate = Account;
-
-            if (itemToUpdate != null)
+            try
             {
-                if (Application.Current != null)
+                var itemToUpdate = Account;
+
+                if (itemToUpdate == null || Application.Current == null || Application.Current.MainPage == null)
+                    return;
+
+                var result = await Application.Current.MainPage.DisplayPromptAsync("Question", "Give the length of the password");
+
+                if (string.IsNullOrEmpty(result) || !int.TryParse(result, out int passwordLength) || passwordLength <= 0)
                 {
-                    if (Application.Current.MainPage != null)
-                    {
-                        var result = await Application.Current.MainPage.DisplayPromptAsync("Question", "Give the length of the password");
-
-                        if (!string.IsNullOrEmpty(result) && int.TryParse(result, out int passwordLength) && passwordLength > 0)
-                        {
-                            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                            var random = new Random();
-                            var newPassword = new string(Enumerable.Repeat(chars, passwordLength - 1)
-                                .Select(s => s[random.Next(s.Length)]).ToArray());
-
-                            var randomIndex = random.Next(newPassword.Length);
-                            newPassword = newPassword.Insert(randomIndex, "!");
-
-                            itemToUpdate.ChangePassword(newPassword);
-
-                            await _apiService.Update(itemToUpdate);
-
-                            LoadPasswordsAsync();
-                        }
-                        else
-                        {
-                            await Application.Current.MainPage.DisplayAlert("Warning", "Enter a valid number greater than 0", "OK");
-                        }
-                    }
+                    await Application.Current.MainPage.DisplayAlert("Warning", "Enter a valid number greater than 0", "OK");
+                    return;
                 }
+
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                var random = new Random();
+                var newPassword = new string(Enumerable.Repeat(chars, passwordLength - 1)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+
+                var randomIndex = random.Next(newPassword.Length);
+                newPassword = newPassword.Insert(randomIndex, "!");
+
+                itemToUpdate.ChangePassword(newPassword);
+
+                await _apiService.Update(itemToUpdate);
+
+                await LoadAccountAsync();
+            }
+            catch (Exception ex)
+            {
+                HandleException("An error occurred while generating password", ex);
             }
         }
 
-        [RelayCommand]
-        private static async Task NavigateBack()
+        private async Task NavigateBack()
         {
             try
             {
@@ -122,10 +118,23 @@ namespace PassMaui.ViewModel
             }
             catch (Exception ex)
             {
-                if (Application.Current != null)
-                    if (Application.Current.MainPage != null)
-                        await Application.Current.MainPage.DisplayAlert("Navigation Error", ex.Message, "OK");
+                HandleException("Navigation Error", ex);
             }
+        }
+
+        private static async Task<bool> ConfirmAccountDeletion()
+        {
+            return await Application.Current.MainPage.DisplayAlert(
+                "Confirm Deletion",
+                "Are you sure you want to delete this account?",
+                "Yes",
+                "No"
+            );
+        }
+
+        private static void HandleException(string title, Exception ex)
+        {
+            Application.Current.MainPage?.DisplayAlert(title, ex.Message, "OK");
         }
     }
 }

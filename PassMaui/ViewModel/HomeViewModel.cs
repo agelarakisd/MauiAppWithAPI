@@ -3,15 +3,23 @@ using CommunityToolkit.Mvvm.Input;
 using PassMaui.View;
 using PassMaui.Domain;
 using PassMaui.APIServices;
+using System.Collections.ObjectModel;
 
 namespace PassMaui.ViewModel
 {
     public partial class HomeViewModel : ObservableObject
     {
         private readonly IAccountApiService _apiService;
+        public IAsyncRelayCommand NavigateToEditAccountCommand => new AsyncRelayCommand<int>(NavigateToEditAccount);
+        public IAsyncRelayCommand NavigateToAddAccountPageCommand => new AsyncRelayCommand(NavigateToAddAccountPage);
 
-        [ObservableProperty]
-        List<Account> passwords;
+
+        private ObservableCollection<Account> _passwords;
+        public ObservableCollection<Account> Passwords
+        {
+            get { return _passwords; }
+            set { SetProperty(ref _passwords, value); }
+        }
 
         private int _hiddenId;
         public int HiddenId
@@ -30,15 +38,15 @@ namespace PassMaui.ViewModel
         public HomeViewModel(IAccountApiService apiService) 
         {
             _apiService = apiService;
-            LoadPasswordsAsync();
+            _ = LoadAccountsAsync();
         }
 
-        public async void LoadPasswordsAsync()
+        public async Task LoadAccountsAsync()
         {
             try
             {
-                var passwords = await _apiService.GetAllAccounts();
-                Passwords = passwords;
+                var accounts = await _apiService.GetAllAccounts();
+                Passwords = new ObservableCollection<Account>(accounts);
             }
             catch (Exception)
             {
@@ -46,24 +54,18 @@ namespace PassMaui.ViewModel
             }
         }
 
-        [RelayCommand]
         private async Task NavigateToEditAccount(int siteId)
         {
-            try 
+            try
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new EditAccountView(_apiService,siteId));
+                await Application.Current.MainPage.Navigation.PushAsync(new EditAccountView(_apiService, siteId));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                if (Application.Current != null)
-                    if (Application.Current.MainPage != null)
-                        await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                await HandleNavigationException(ex);
             }
         }
 
-
-
-        [RelayCommand]
         private async Task NavigateToAddAccountPage()
         {
             try
@@ -72,9 +74,15 @@ namespace PassMaui.ViewModel
             }
             catch (Exception ex)
             {
-                if (Application.Current != null)
-                    if (Application.Current.MainPage != null)
-                        await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                await HandleNavigationException(ex);
+            }
+        }
+
+        private static async Task HandleNavigationException(Exception ex)
+        {
+            if (Application.Current != null && Application.Current.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
