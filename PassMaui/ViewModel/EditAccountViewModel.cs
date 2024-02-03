@@ -9,34 +9,19 @@ namespace PassMaui.ViewModel
     public partial class EditAccountViewModel : ObservableObject
     {
         private readonly IAccountApiService _apiService;
-        private readonly int _id;
 
         [ObservableProperty]
         Account account;
-
-        public EditAccountViewModel(IAccountApiService apiService, int id)
-        {
-            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
-            _id = id;
-            _ = LoadAccountAsync();
-        }
 
         public IAsyncRelayCommand CopyPasswordCommand => new AsyncRelayCommand<int>(CopyPassword);
         public IAsyncRelayCommand DeleteAccountCommand => new AsyncRelayCommand(DeleteAccount);
         public IAsyncRelayCommand GeneratePasswordCommand => new AsyncRelayCommand<int>(GeneratePassword);
         public IAsyncRelayCommand NavigateBackCommand => new AsyncRelayCommand(NavigateBack);
 
-        public async Task LoadAccountAsync()
+        public EditAccountViewModel(IAccountApiService apiService, Account acc)
         {
-            try
-            {
-                Account = await _apiService.GetAccount(_id);
-                OnPropertyChanged(nameof(Account));
-            }
-            catch (Exception ex)
-            {
-                HandleException("An error occurred while loading account", ex);
-            }
+            _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
+            Account = acc;
         }
 
         private async Task CopyPassword(int siteId)
@@ -59,11 +44,11 @@ namespace PassMaui.ViewModel
 
         private async Task DeleteAccount()
         {
-            if (await EditAccountViewModel.ConfirmAccountDeletion())
+            if (await ConfirmAccountDeletion())
             {
                 try
                 {
-                    await _apiService.Delete(_id);
+                    await _apiService.Delete(Account.Id);
                     await Shell.Current.GoToAsync(nameof(HomeView));
                 }
                 catch (Exception ex)
@@ -100,9 +85,8 @@ namespace PassMaui.ViewModel
 
                 itemToUpdate.ChangePassword(newPassword);
 
-                await _apiService.Update(itemToUpdate);
-
-                await LoadAccountAsync();
+                var acc = await _apiService.Update(itemToUpdate);
+                Account = acc;
             }
             catch (Exception ex)
             {

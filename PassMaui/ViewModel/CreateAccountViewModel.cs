@@ -95,8 +95,6 @@ namespace PassMaui.ViewModel
 
         private static async Task HandleErrorAsync(Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex}");
-
             await DisplayAlert("Error", ex.Message);
         }
 

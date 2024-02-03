@@ -58,7 +58,8 @@ namespace PassMaui.ViewModel
         {
             try
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new EditAccountView(_apiService, siteId));
+                var account = Passwords.FirstOrDefault(a => a.Id == siteId);
+                await Application.Current.MainPage.Navigation.PushAsync(new EditAccountView(_apiService, account));
             }
             catch (Exception ex)
             {
