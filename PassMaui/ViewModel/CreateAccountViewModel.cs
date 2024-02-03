@@ -110,10 +110,14 @@ namespace PassMaui.ViewModel
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();
             var newPassword = new StringBuilder(length);
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < length - 1; i++) 
             {
                 newPassword.Append(chars[random.Next(chars.Length)]);
             }
+
+            var randomIndex = random.Next(newPassword.Length);
+            newPassword.Insert(randomIndex, "!");
+
             return newPassword.ToString();
         }
     }
