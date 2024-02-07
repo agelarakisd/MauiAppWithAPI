@@ -14,29 +14,31 @@
                     <StackLayout BackgroundColor="#dbdada">
                         <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                             <Label Text="Site:" VerticalOptions="Center" WidthRequest="90"/>
-                            <Entry Text="{Binding Account.Site}" Placeholder="Site" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                            <Entry Text="{Binding Account.Site, Mode=TwoWay}" Placeholder="Site" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
                         </StackLayout>
 
                         <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                             <Label Text="Description:" VerticalOptions="Center" WidthRequest="90"/>
-                            <Entry Text="{Binding Account.Description}" Placeholder="Description" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                            <Entry Text="{Binding Account.Description, Mode=TwoWay}" Placeholder="Description" VerticalOptions="CenterAndExpand" WidthRequest="180"/>
                         </StackLayout>
 
                         <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                             <Label Text="Username:" VerticalOptions="Center" WidthRequest="90"/>
-                            <Entry Text="{Binding Account.Username}" Placeholder="Username"  VerticalOptions="CenterAndExpand" WidthRequest="180"/>
+                            <Entry Text="{Binding Account.Username, Mode=TwoWay}" Placeholder="Username"  VerticalOptions="CenterAndExpand" WidthRequest="180"/>
                         </StackLayout>
 
                         <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                             <Label Text="Password:" VerticalOptions="Center" WidthRequest="90"/>
-                            <Entry Text="{Binding Account.Password}" Placeholder="Password" IsPassword="True" WidthRequest="180"/>
+                            <Entry Text="{Binding Account.Password, Mode=TwoWay}" Placeholder="Password" IsPassword="True" WidthRequest="180"/>
                         </StackLayout>
 
                         <Grid HorizontalOptions="CenterAndExpand">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -44,7 +46,8 @@
 
                             <Button Text="Copy Password" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.CopyPasswordCommand}" CommandParameter="{Binding Account.Id}"  Grid.Row="0" Grid.Column="0" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
                             <Button Text="Generate Password" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.GeneratePasswordCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="0" Grid.Column="1" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
-                            <Button Text="Delete" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.DeleteAccountCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="0" Grid.Column="2" BackgroundColor="#f54242" Margin="0,5,0,0"/>
+                            <Button Text="Update" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.UpdateAccountCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="0" Grid.Column="2" BackgroundColor="black" Margin="0,5,0,0" TextColor="White"/>
+                            <Button Text="Delete" Command="{Binding Source={x:Reference EditAccount}, Path=BindingContext.DeleteAccountCommand}" CommandParameter="{Binding Account.Id}" Grid.Row="{OnPlatform 0,Android=1,iOS=1}" Grid.Column="{OnPlatform 3,Android=0,iOS=0}" BackgroundColor="#f54242" Margin="0,5,0,0"/>
                         </Grid>
                     </StackLayout>
                 </Frame>

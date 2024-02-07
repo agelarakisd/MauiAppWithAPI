@@ -22,7 +22,7 @@ namespace PassMaui
             builder.Services.AddTransient<HomeView>();
             builder.Services.AddScoped<HomeViewModel>();
             builder.Services.AddSingleton<CreateAccountViewModel>();
-            builder.Services.AddSingleton<EditAccountViewModel>();
+            builder.Services.AddTransient<EditAccountViewModel>();
             builder.Services.AddTransient<PassMauiApiClient>();
             builder.Services.AddScoped<IAccountApiService>(sp =>
             { 

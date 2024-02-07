@@ -46,7 +46,7 @@ public class Account
         Password = password;
     }
 
-    public void ChangeAccountDetails(string site, string description, string username, string password) 
+    public void ChangeAccountDetails(string site, string description, string username, string password)
     {
         Site = site;
         Description = description;

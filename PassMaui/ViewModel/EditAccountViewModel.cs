@@ -13,10 +13,12 @@ namespace PassMaui.ViewModel
         [ObservableProperty]
         Account account;
 
-        public IAsyncRelayCommand CopyPasswordCommand => new AsyncRelayCommand<int>(CopyPassword);
+        public IAsyncRelayCommand CopyPasswordCommand => new AsyncRelayCommand(CopyPassword);
         public IAsyncRelayCommand DeleteAccountCommand => new AsyncRelayCommand(DeleteAccount);
-        public IAsyncRelayCommand GeneratePasswordCommand => new AsyncRelayCommand<int>(GeneratePassword);
+        public IAsyncRelayCommand GeneratePasswordCommand => new AsyncRelayCommand(GeneratePassword);
         public IAsyncRelayCommand NavigateBackCommand => new AsyncRelayCommand(NavigateBack);
+        public IAsyncRelayCommand UpdateAccountCommand => new AsyncRelayCommand(UpdateAccount);
+
 
         public EditAccountViewModel(IAccountApiService apiService, Account acc)
         {
@@ -24,9 +26,10 @@ namespace PassMaui.ViewModel
             Account = acc;
         }
 
-        private async Task CopyPassword(int siteId)
+
+        private async Task CopyPassword()
         {
-            try 
+            try
             {
                 string password = Account.Password;
                 if (!string.IsNullOrEmpty(password))
@@ -41,6 +44,23 @@ namespace PassMaui.ViewModel
             }
 
         }
+
+        private async Task UpdateAccount()
+        {
+            try
+            {
+                Account.ChangeAccountDetails(Account.Site, Account.Description , Account.Username , Account.Password );
+
+                await _apiService.Update(Account);
+
+                await Application.Current.MainPage?.DisplayAlert("", "Account updated successfully", "OK");
+            }
+            catch (Exception ex)
+            {
+                HandleException("An error occurred while updating the account", ex);
+            }
+        }
+
 
         private async Task DeleteAccount()
         {
@@ -58,7 +78,7 @@ namespace PassMaui.ViewModel
             }
         }
 
-        private async Task GeneratePassword(int siteId)
+        private async Task GeneratePassword()
         {
             try
             {
