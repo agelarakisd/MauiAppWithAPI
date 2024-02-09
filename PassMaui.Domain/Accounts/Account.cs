@@ -22,15 +22,15 @@ public class Account
         Password = password;
     }
 
-    public int Id { get; private set; }
+    public int Id { get;  set; }
     
-    public string Site { get; private set; }
+    public string Site { get;  set; }
 
-    public string Description { get; private set; }
+    public string Description { get;  set; }
 
-    public string Username { get; private set; }
+    public string Username { get;  set; }
 
-    public string Password { get; private set; }
+    public string Password { get;  set; }
 
     public static Account Create(
         string site,
